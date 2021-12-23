@@ -21,28 +21,34 @@ def doLogin(request):
         email = request.POST.get("email")
         pwd = request.POST.get("pass")
 
-        db = User.objects.get(email = email)
-        if email == db.email:
-            if pwd == db.password:
-                request.session['id'] = db.id
+        try:
+            db = User.objects.get(email = email)
+        except:
+            return render(request, "index.html", {'fail' : "Email doesn't exists"})
 
-                # url = "http://127.0.0.1:8000/api/token/"
-                # data = {"username" : email, "password" : pwd}
+        if pwd == db.password:
+            request.session['id'] = db.id
 
-                # req = requests.post(url, data)
+            # url = "http://127.0.0.1:8000/api/token/"
+            # data = {"username" : email, "password" : pwd}
 
-                # print(req.text)
+            # req = requests.post(url, data)
 
-                return redirect("/logshow")
-            return render(request, "login.html")
-        return render(request, "login.html")
+            # print(req.text)
+
+            return redirect("/logshow")
+        return render(request, "index.html", {'fail' : 'Password Incorrect'})
 
 def doRegister(request):
     if request.method == "POST":
         name = request.POST.get("name")
         email = request.POST.get("email")
         pwd = request.POST.get("pass")
+        confpwd = request.POST.get("confpass")
         address = request.POST.get("address")
+
+        if pwd != confpwd:
+            return render(request, 'register.html', {'fail' : "Passwords didn't match"})
 
         db = User.objects.create(name = name, email = email , password= pwd, address = address)
         db.save()
