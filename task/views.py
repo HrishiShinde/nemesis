@@ -36,7 +36,7 @@ def doLogin(request):
 
             # print(req.text)
 
-            return redirect("/logshow")
+            return redirect("/home")
         return render(request, "index.html", {'fail' : 'Password Incorrect'})
 
 def doRegister(request):
